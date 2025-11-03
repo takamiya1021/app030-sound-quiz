@@ -1,0 +1,12 @@
+import { defineConfig } from "@playwright/test";
+
+export default defineConfig({
+  testDir: "./e2e",
+  fullyParallel: true,
+  reporter: [["list"]],
+  use: {
+    actionTimeout: 0,
+    trace: "off",
+    headless: true,
+  },
+});
