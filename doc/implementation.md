@@ -51,12 +51,12 @@
 
 ### タスク
 
-#### 【 】1-1. 型定義作成（1時間）
+#### 【✔】1-1. 型定義作成（1時間）
 - **Red**: 型定義のテスト
 - **Green**: SoundData, QuizSession, UserProgress, AppSettings 定義
 - **Refactor**: 型の共通化
 
-#### 【 】1-2. Zustand Store実装（3時間）
+#### 【✔】1-2. Zustand Store実装（3時間）
 - **Red**: Store各アクションのテスト
   ```typescript
   test('should start quiz', () => {
@@ -70,7 +70,7 @@
   - recordResult, recordConfusedPair
 - **Refactor**: 状態管理最適化
 
-#### 【 】1-3. LocalStorage統合（1時間）
+#### 【✔】1-3. LocalStorage統合（1時間）
 - **Red**: 永続化テスト
 - **Green**: `lib/storage.ts` 実装
 - **Refactor**: デバウンス処理
