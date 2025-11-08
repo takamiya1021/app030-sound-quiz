@@ -51,7 +51,7 @@ export const generateChoices = (
   correctSound: SoundData,
   allAvailable: SoundData[],
   options: ChoiceOptions = {},
-): string[] => {
+): SoundData[] => {
   const rng = options.rng ?? defaultRng;
   const sameCategory = allAvailable.filter(
     (sound) => sound.category === correctSound.category && sound.id !== correctSound.id,
@@ -65,8 +65,8 @@ export const generateChoices = (
     throw new Error("選択肢を生成するための音源が不足しています");
   }
 
-  const wrongChoices = take(shuffle(candidates, rng), 3).map((sound) => sound.name);
-  const choices = [correctSound.name, ...wrongChoices];
+  const wrongChoices = take(shuffle(candidates, rng), 3);
+  const choices = [correctSound, ...wrongChoices];
 
   return shuffle(choices, rng);
 };

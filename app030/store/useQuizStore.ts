@@ -44,6 +44,7 @@ const createQuizSession = (
   difficulty: DifficultyLevel,
   sounds: SoundData[],
   choices: string[][],
+  choiceSoundIds: string[][],
   correctAnswers: number[],
 ): QuizSession => ({
   id: generateSessionId(),
@@ -51,6 +52,7 @@ const createQuizSession = (
   difficulty,
   sounds,
   choices,
+  choiceSoundIds,
   correctAnswers,
   currentIndex: 0,
   answers: Array<QuizAnswer>(QUIZ_LENGTH).fill(null),
@@ -102,14 +104,18 @@ export const createQuizStore = () =>
           sounds: state.sounds,
         });
 
-        const choices = quizSounds.map((sound) =>
-          generateChoices(sound, state.sounds),
-        );
+        const choiceLabels: string[][] = [];
+        const choiceIds: string[][] = [];
 
-        const correctAnswers = choices.map((choiceSet, index) => {
-          const answerIndex = choiceSet.findIndex(
-            (choice) => choice === quizSounds[index]?.name,
-          );
+        quizSounds.forEach((sound, index) => {
+          const choiceObjects = generateChoices(sound, state.sounds);
+          choiceLabels.push(choiceObjects.map((choice) => choice.name));
+          choiceIds.push(choiceObjects.map((choice) => choice.id));
+        });
+
+        const correctAnswers = choiceIds.map((idSet, index) => {
+          const correctId = quizSounds[index]?.id;
+          const answerIndex = idSet.findIndex((id) => id === correctId);
           if (answerIndex === -1) {
             throw new Error("選択肢に正解が含まれていません");
           }
@@ -121,7 +127,8 @@ export const createQuizStore = () =>
             category,
             difficulty,
             quizSounds,
-            choices,
+            choiceLabels,
+            choiceIds,
             correctAnswers,
           ),
           isPlaying: false,

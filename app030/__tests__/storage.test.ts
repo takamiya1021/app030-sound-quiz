@@ -38,6 +38,7 @@ const createSession = (): QuizSession => ({
   difficulty: "beginner",
   sounds: Array.from({ length: QUIZ_LENGTH }, (_, index) => createSound(index)),
   choices: Array.from({ length: QUIZ_LENGTH }, () => ["A", "B", "C", "D"]),
+  choiceSoundIds: Array.from({ length: QUIZ_LENGTH }, () => ["s1", "s2", "s3", "s4"]),
   correctAnswers: Array(QUIZ_LENGTH).fill(0),
   currentIndex: 0,
   answers: Array(QUIZ_LENGTH).fill(null),

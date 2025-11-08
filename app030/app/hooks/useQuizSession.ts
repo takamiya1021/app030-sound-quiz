@@ -28,6 +28,7 @@ export function useQuizSession(category?: string | null, difficultyInput?: strin
   const finishQuiz = useQuizStore((state) => state.finishQuiz);
   const computeScore = useQuizStore((state) => state.score);
   const recordResult = useQuizStore((state) => state.recordResult);
+  const recordConfusedPair = useQuizStore((state) => state.recordConfusedPair);
 
   useEffect(() => {
     if (!normalizedCategory) {
@@ -94,6 +95,17 @@ export function useQuizSession(category?: string | null, difficultyInput?: strin
 
       answerQuestion(choiceIndex);
 
+      const correctIndex = currentSession.correctAnswers[currentSession.currentIndex];
+      if (choiceIndex !== correctIndex) {
+        const chosenId =
+          currentSession.choiceSoundIds[currentSession.currentIndex]?.[choiceIndex];
+        const correctId =
+          currentSession.choiceSoundIds[currentSession.currentIndex]?.[correctIndex];
+        if (chosenId && correctId) {
+          recordConfusedPair(correctId, chosenId);
+        }
+      }
+
       const isLastQuestion = currentSession.currentIndex >= QUIZ_LENGTH - 1;
       if (isLastQuestion) {
         finishQuiz();
@@ -101,7 +113,7 @@ export function useQuizSession(category?: string | null, difficultyInput?: strin
         nextQuestion();
       }
     },
-    [currentSession, answerQuestion, nextQuestion, finishQuiz],
+    [currentSession, answerQuestion, nextQuestion, finishQuiz, recordConfusedPair],
   );
 
   const resetQuiz = useCallback(() => {

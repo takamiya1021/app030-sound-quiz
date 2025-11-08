@@ -56,6 +56,9 @@ const reviveSession = (raw: QuizSession): QuizSession => ({
   choices: raw.choices
     .slice(0, QUIZ_LENGTH)
     .map((choiceSet) => choiceSet.slice(0, 4)),
+  choiceSoundIds: raw.choiceSoundIds
+    .slice(0, QUIZ_LENGTH)
+    .map((choiceSet) => choiceSet.slice(0, 4)),
   startedAt: new Date(raw.startedAt),
   completedAt: raw.completedAt ? new Date(raw.completedAt) : undefined,
   answers: raw.answers.slice(0, QUIZ_LENGTH) as QuizAnswer[],

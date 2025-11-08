@@ -40,6 +40,7 @@ describe("useQuizStore", () => {
     ).toBe(true);
     expect(session?.answers).toEqual(Array(QUIZ_LENGTH).fill(null));
     expect(session?.choices.every((choiceSet) => choiceSet.length === 4)).toBe(true);
+    expect(session?.choiceSoundIds.every((choiceSet) => choiceSet.length === 4)).toBe(true);
   });
 
   it("records answers and advances the quiz", () => {

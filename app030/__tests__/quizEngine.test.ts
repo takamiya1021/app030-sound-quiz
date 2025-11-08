@@ -65,8 +65,8 @@ describe("quizEngine", () => {
       const choices = generateChoices(correct, SAMPLE_SOUNDS, { rng: fixedRng });
 
       expect(choices).toHaveLength(4);
-      expect(new Set(choices).size).toBe(4);
-      expect(choices).toContain(correct.name);
+      expect(new Set(choices.map((c) => c.id)).size).toBe(4);
+      expect(choices.find((c) => c.id === correct.id)).toBeDefined();
     });
 
     it("falls back to other categories when insufficient distractors", () => {
@@ -79,7 +79,7 @@ describe("quizEngine", () => {
 
       const choices = generateChoices(correct, limited, { rng: fixedRng });
       expect(choices).toHaveLength(4);
-      expect(new Set(choices).size).toBe(4);
+      expect(new Set(choices.map((c) => c.id)).size).toBe(4);
     });
   });
 

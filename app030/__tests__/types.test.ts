@@ -42,6 +42,7 @@ describe("domain types", () => {
       difficulty: "beginner",
       sounds: Array(QUIZ_LENGTH).fill(sound),
       choices: Array(QUIZ_LENGTH).fill(["A", "B", "C", "D"]),
+      choiceSoundIds: Array(QUIZ_LENGTH).fill(["s1", "s2", "s3", "s4"]),
       correctAnswers: Array(QUIZ_LENGTH).fill(0),
       currentIndex: 0,
       answers: Array(QUIZ_LENGTH).fill(null),

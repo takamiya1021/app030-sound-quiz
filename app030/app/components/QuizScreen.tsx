@@ -6,6 +6,7 @@ import { AudioPlayer } from "@/app/components/AudioPlayer";
 import { QuizChoices } from "@/app/components/QuizChoices";
 import { QuizHeading } from "@/app/components/QuizHeading";
 import { QuizResultCard } from "@/app/components/QuizResultCard";
+import { ConfusedPairsPanel } from "@/app/components/ConfusedPairsPanel";
 import { useQuizSession } from "@/app/hooks/useQuizSession";
 
 interface QuizScreenProps {
@@ -52,6 +53,7 @@ export function QuizScreen({ category, difficulty }: QuizScreenProps) {
           percentage={score.percentage}
           onRetry={resetQuiz}
         />
+        <ConfusedPairsPanel />
         <Link
           href="/"
           className="inline-flex items-center justify-center rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-indigo-300 hover:text-white"

@@ -33,6 +33,7 @@ export interface QuizSession {
   difficulty: DifficultyLevel;
   sounds: SoundData[];
   choices: string[][];
+  choiceSoundIds: string[][];
   correctAnswers: number[];
   currentIndex: number;
   answers: QuizAnswer[];
@@ -105,6 +106,14 @@ export const isQuizSession = (value: unknown): value is QuizSession => {
     !Array.isArray(value.choices) ||
     value.choices.length !== QUIZ_LENGTH ||
     !value.choices.every(
+      (choiceSet) =>
+        Array.isArray(choiceSet) &&
+        choiceSet.length === 4 &&
+        choiceSet.every((choice) => typeof choice === "string"),
+    ) ||
+    !Array.isArray(value.choiceSoundIds) ||
+    value.choiceSoundIds.length !== QUIZ_LENGTH ||
+    !value.choiceSoundIds.every(
       (choiceSet) =>
         Array.isArray(choiceSet) &&
         choiceSet.length === 4 &&
