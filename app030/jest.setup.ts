@@ -34,3 +34,11 @@ Object.defineProperty(globalThis, "AudioContext", {
   writable: true,
   value: AudioContextMock,
 });
+
+jest.mock("next/link", () => {
+  const React = require("react");
+  return React.forwardRef(
+    ({ href, children, ...rest }: { href: string; children: React.ReactNode }, ref) =>
+      React.createElement("a", { href, ref, ...rest }, children),
+  );
+});
