@@ -37,6 +37,7 @@ const createSession = (): QuizSession => ({
   category: "楽器の音",
   difficulty: "beginner",
   sounds: Array.from({ length: QUIZ_LENGTH }, (_, index) => createSound(index)),
+  choices: Array.from({ length: QUIZ_LENGTH }, () => ["A", "B", "C", "D"]),
   correctAnswers: Array(QUIZ_LENGTH).fill(0),
   currentIndex: 0,
   answers: Array(QUIZ_LENGTH).fill(null),

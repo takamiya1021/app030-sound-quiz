@@ -24,7 +24,7 @@ const sounds: SoundData[] = [
     name: "バイオリン",
     filename: "instruments/violin.mp3",
     description: "弓で弦を擦り上げる高音域の伸びやかな音。",
-    difficulty: "intermediate",
+    difficulty: "beginner",
   },
   {
     id: "inst-04",
@@ -32,7 +32,7 @@ const sounds: SoundData[] = [
     name: "トランペット",
     filename: "instruments/trumpet.mp3",
     description: "金管楽器らしい明るく鋭いアタックを持つ音色。",
-    difficulty: "intermediate",
+    difficulty: "beginner",
   },
   {
     id: "inst-05",
@@ -48,7 +48,7 @@ const sounds: SoundData[] = [
     name: "サックス",
     filename: "instruments/saxophone.mp3",
     description: "ジャズでおなじみの艶やかで表情豊かな音色。",
-    difficulty: "intermediate",
+    difficulty: "beginner",
   },
   {
     id: "inst-07",
@@ -56,7 +56,7 @@ const sounds: SoundData[] = [
     name: "クラリネット",
     filename: "instruments/clarinet.mp3",
     description: "温かみと柔らかさを兼ね備えた木管の音。",
-    difficulty: "intermediate",
+    difficulty: "beginner",
   },
   {
     id: "inst-08",

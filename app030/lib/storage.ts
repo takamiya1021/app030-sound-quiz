@@ -53,6 +53,9 @@ const reviveSound = (raw: SoundData): SoundData => ({
 const reviveSession = (raw: QuizSession): QuizSession => ({
   ...raw,
   sounds: raw.sounds.slice(0, QUIZ_LENGTH).map(reviveSound),
+  choices: raw.choices
+    .slice(0, QUIZ_LENGTH)
+    .map((choiceSet) => choiceSet.slice(0, 4)),
   startedAt: new Date(raw.startedAt),
   completedAt: raw.completedAt ? new Date(raw.completedAt) : undefined,
   answers: raw.answers.slice(0, QUIZ_LENGTH) as QuizAnswer[],

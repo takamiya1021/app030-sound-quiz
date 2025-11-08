@@ -41,6 +41,7 @@ describe("domain types", () => {
       category: "動物の鳴き声",
       difficulty: "beginner",
       sounds: Array(QUIZ_LENGTH).fill(sound),
+      choices: Array(QUIZ_LENGTH).fill(["A", "B", "C", "D"]),
       correctAnswers: Array(QUIZ_LENGTH).fill(0),
       currentIndex: 0,
       answers: Array(QUIZ_LENGTH).fill(null),

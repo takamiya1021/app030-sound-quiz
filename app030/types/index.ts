@@ -32,6 +32,7 @@ export interface QuizSession {
   category: string;
   difficulty: DifficultyLevel;
   sounds: SoundData[];
+  choices: string[][];
   correctAnswers: number[];
   currentIndex: number;
   answers: QuizAnswer[];
@@ -70,7 +71,7 @@ export interface AppSettings {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null;
 
-const isDifficultyLevel = (value: unknown): value is DifficultyLevel =>
+export const isDifficultyLevel = (value: unknown): value is DifficultyLevel =>
   typeof value === "string" && DIFFICULTY_LEVELS.includes(value as DifficultyLevel);
 
 export const isSoundData = (value: unknown): value is SoundData => {
@@ -101,6 +102,14 @@ export const isQuizSession = (value: unknown): value is QuizSession => {
     !Array.isArray(value.sounds) ||
     value.sounds.length !== QUIZ_LENGTH ||
     !value.sounds.every(isSoundData) ||
+    !Array.isArray(value.choices) ||
+    value.choices.length !== QUIZ_LENGTH ||
+    !value.choices.every(
+      (choiceSet) =>
+        Array.isArray(choiceSet) &&
+        choiceSet.length === 4 &&
+        choiceSet.every((choice) => typeof choice === "string"),
+    ) ||
     !Array.isArray(value.correctAnswers) ||
     value.correctAnswers.length !== QUIZ_LENGTH ||
     !value.correctAnswers.every(

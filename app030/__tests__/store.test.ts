@@ -39,6 +39,7 @@ describe("useQuizStore", () => {
       ),
     ).toBe(true);
     expect(session?.answers).toEqual(Array(QUIZ_LENGTH).fill(null));
+    expect(session?.choices.every((choiceSet) => choiceSet.length === 4)).toBe(true);
   });
 
   it("records answers and advances the quiz", () => {
@@ -71,9 +72,17 @@ describe("useQuizStore", () => {
     store.setState({ sounds: buildSounds() });
     store.getState().startQuiz("楽器の音", "beginner");
 
-    store.getState().answerQuestion(0);
-    store.getState().nextQuestion();
-    store.getState().answerQuestion(2);
+    const baseSession = store.getState().currentSession!;
+    const answers = [0, null, null, 2, null, null, null, null, null, null];
+    const correctAnswers = [0, 3, 1, 1, 1, 0, 0, 0, 0, 0];
+
+    store.setState({
+      currentSession: {
+        ...baseSession,
+        answers,
+        correctAnswers,
+      },
+    });
 
     const score = store.getState().score();
     expect(score.correct).toBe(1);

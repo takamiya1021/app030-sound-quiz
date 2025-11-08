@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+import soundsData from "@/data/sounds";
+import { generateChoices, generateQuiz } from "@/lib/quizEngine";
 import {
   AppSettings,
   CategoryStat,
@@ -41,12 +43,15 @@ const createQuizSession = (
   category: string,
   difficulty: DifficultyLevel,
   sounds: SoundData[],
+  choices: string[][],
+  correctAnswers: number[],
 ): QuizSession => ({
   id: generateSessionId(),
   category,
   difficulty,
   sounds,
-  correctAnswers: Array(QUIZ_LENGTH).fill(0),
+  choices,
+  correctAnswers,
   currentIndex: 0,
   answers: Array<QuizAnswer>(QUIZ_LENGTH).fill(null),
   playCount: Array(QUIZ_LENGTH).fill(0),
@@ -78,6 +83,7 @@ export interface QuizStore {
 
   // Computed
   currentSound: () => SoundData | null;
+  currentChoices: () => string[] | null;
   score: () => { correct: number; total: number };
   categoryAccuracy: (category: string) => number;
 }
@@ -87,24 +93,37 @@ export const createQuizStore = () =>
     currentSession: null,
     progress: createInitialProgress(),
     settings: createInitialSettings(),
-    sounds: [],
+    sounds: soundsData,
     isPlaying: false,
 
     startQuiz: (category, difficulty) =>
       set((state) => {
-        const filtered = state.sounds.filter(
-          (sound) => sound.category === category && sound.difficulty === difficulty,
+        const quizSounds = generateQuiz(category, difficulty, QUIZ_LENGTH, {
+          sounds: state.sounds,
+        });
+
+        const choices = quizSounds.map((sound) =>
+          generateChoices(sound, state.sounds),
         );
 
-        if (filtered.length < QUIZ_LENGTH) {
-          throw new Error(
-            `カテゴリー「${category}」難易度「${difficulty}」の音源が不足しています`,
+        const correctAnswers = choices.map((choiceSet, index) => {
+          const answerIndex = choiceSet.findIndex(
+            (choice) => choice === quizSounds[index]?.name,
           );
-        }
+          if (answerIndex === -1) {
+            throw new Error("選択肢に正解が含まれていません");
+          }
+          return answerIndex;
+        });
 
-        const selected = filtered.slice(0, QUIZ_LENGTH);
         return {
-          currentSession: createQuizSession(category, difficulty, selected),
+          currentSession: createQuizSession(
+            category,
+            difficulty,
+            quizSounds,
+            choices,
+            correctAnswers,
+          ),
           isPlaying: false,
         };
       }),
@@ -249,7 +268,7 @@ export const createQuizStore = () =>
       }),
 
     loadSounds: async () => {
-      /* 音源ロードは Phase 2 で実装 */
+      set({ sounds: soundsData });
     },
 
     currentSound: () => {
@@ -259,6 +278,15 @@ export const createQuizStore = () =>
       }
 
       return session.sounds[session.currentIndex] ?? null;
+    },
+
+    currentChoices: () => {
+      const session = get().currentSession;
+      if (!session) {
+        return null;
+      }
+
+      return session.choices[session.currentIndex] ?? null;
     },
 
     score: () => {
@@ -293,3 +321,13 @@ export const createQuizStore = () =>
   }));
 
 export const useQuizStore = createQuizStore();
+
+export const resetQuizStore = () => {
+  useQuizStore.setState({
+    currentSession: null,
+    progress: createInitialProgress(),
+    settings: createInitialSettings(),
+    sounds: soundsData,
+    isPlaying: false,
+  });
+};
