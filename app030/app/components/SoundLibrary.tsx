@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 
 import { AudioPlayer } from "@/app/components/AudioPlayer";
+import { AISoundDescription } from "@/app/components/AISoundDescription";
 import { useSoundLibrary } from "@/app/hooks/useSoundLibrary";
 import { SoundData } from "@/types";
 
@@ -78,11 +79,14 @@ export function SoundLibrary({ initialCategory }: SoundLibraryProps) {
       </div>
 
       {preview && (
-        <AudioPlayer
-          soundName={preview.name}
-          filename={preview.filename}
-          maxPlayCount={3}
-        />
+        <div className="flex flex-col gap-4">
+          <AudioPlayer
+            soundName={preview.name}
+            filename={preview.filename}
+            maxPlayCount={3}
+          />
+          <AISoundDescription sound={preview} />
+        </div>
       )}
 
       <div className="flex flex-col gap-6">

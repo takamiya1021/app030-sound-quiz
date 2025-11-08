@@ -231,12 +231,12 @@
 
 ### タスク
 
-#### 【 】8-1. Gemini API統合（1時間）
+#### 【✔】8-1. Gemini API統合（1時間）
 - **Red**: API接続テスト（モック）
 - **Green**: `lib/geminiService.ts` 実装
 - **Refactor**: エラーハンドリング
 
-#### 【 】8-2. 音声説明文の自動生成（2時間）
+#### 【✔】8-2. 音声説明文の自動生成（2時間）
 - **Red**: 説明文生成テスト
 - **Green**: generateSoundDescription 実装
   - 音の特徴解説
