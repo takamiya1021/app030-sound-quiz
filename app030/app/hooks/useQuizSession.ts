@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 import { resetQuizStore, useQuizStore } from "@/store/useQuizStore";
 import { QUIZ_LENGTH, DifficultyLevel, isDifficultyLevel } from "@/types";
 
@@ -25,7 +26,8 @@ export function useQuizSession(category?: string | null, difficultyInput?: strin
   const answerQuestion = useQuizStore((state) => state.answerQuestion);
   const nextQuestion = useQuizStore((state) => state.nextQuestion);
   const finishQuiz = useQuizStore((state) => state.finishQuiz);
-  const score = useQuizStore((state) => state.score);
+  const computeScore = useQuizStore((state) => state.score);
+  const recordResult = useQuizStore((state) => state.recordResult);
 
   useEffect(() => {
     if (!normalizedCategory) {
@@ -58,6 +60,34 @@ export function useQuizSession(category?: string | null, difficultyInput?: strin
 
   const questionNumber = currentSession ? currentSession.currentIndex + 1 : 0;
 
+  const scoreSummary = useMemo(
+    () =>
+      currentSession
+        ? computeScore()
+        : {
+            correct: 0,
+            total: 0,
+            percentage: 0,
+          },
+    [currentSession, computeScore],
+  );
+
+  const recordedSessionRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!currentSession?.completedAt) {
+      recordedSessionRef.current = null;
+      return;
+    }
+
+    if (recordedSessionRef.current === currentSession.id) {
+      return;
+    }
+
+    recordResult(scoreSummary.correct, scoreSummary.total, currentSession.category);
+    recordedSessionRef.current = currentSession.id;
+  }, [currentSession, recordResult, scoreSummary]);
+
   const submitAnswer = useCallback(
     (choiceIndex: number) => {
       if (!currentSession || currentSession.completedAt) return;
@@ -88,7 +118,7 @@ export function useQuizSession(category?: string | null, difficultyInput?: strin
     sound: currentSound(),
     choices: currentChoices(),
     submitAnswer,
-    score: score(),
+    score: scoreSummary,
     resetQuiz,
   };
 }
