@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from "react";
 import Link from "next/link";
 
 import { AudioPlayer } from "@/app/components/AudioPlayer";
@@ -7,7 +8,11 @@ import { QuizChoices } from "@/app/components/QuizChoices";
 import { QuizHeading } from "@/app/components/QuizHeading";
 import { QuizResultCard } from "@/app/components/QuizResultCard";
 import { ConfusedPairsPanel } from "@/app/components/ConfusedPairsPanel";
+import { AIListeningTips } from "@/app/components/AIListeningTips";
+import { AIStudyPlan } from "@/app/components/AIStudyPlan";
 import { useQuizSession } from "@/app/hooks/useQuizSession";
+import { useQuizStore } from "@/store/useQuizStore";
+import sounds from "@/data/sounds";
 
 interface QuizScreenProps {
   category?: string | null;
@@ -27,6 +32,12 @@ export function QuizScreen({ category, difficulty }: QuizScreenProps) {
     score,
     resetQuiz,
   } = useQuizSession(category, difficulty);
+
+  const confusedPairs = useQuizStore((state) => state.progress.confusedPairs);
+  const topPair = confusedPairs[0];
+  const soundMap = useSoundMap();
+  const tipSoundA = topPair ? soundMap.get(topPair.sound1) ?? null : null;
+  const tipSoundB = topPair ? soundMap.get(topPair.sound2) ?? null : null;
 
   if (status === "error") {
     return (
@@ -54,6 +65,8 @@ export function QuizScreen({ category, difficulty }: QuizScreenProps) {
           onRetry={resetQuiz}
         />
         <ConfusedPairsPanel />
+        <AIListeningTips soundA={tipSoundA} soundB={tipSoundB} />
+        <AIStudyPlan />
         <Link
           href="/"
           className="inline-flex items-center justify-center rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:border-indigo-300 hover:text-white"
@@ -125,4 +138,12 @@ export function QuizScreen({ category, difficulty }: QuizScreenProps) {
       </div>
     </div>
   );
+}
+
+function useSoundMap() {
+  return useMemo(() => {
+    const map = new Map<string, (typeof sounds)[number]>();
+    sounds.forEach((sound) => map.set(sound.id, sound));
+    return map;
+  }, []);
 }

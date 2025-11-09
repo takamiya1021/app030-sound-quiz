@@ -40,4 +40,56 @@ describe("GeminiService", () => {
     const service = new GeminiService({ fetchImpl, apiKey: "test-key" });
     await expect(service.generateSoundDescription(mockSound)).resolves.toMatch(/ピアノ/);
   });
+
+  it("parses listening tips JSON", async () => {
+    const fetchImpl = jest.fn(async () => ({
+      ok: true,
+      json: async () => ({
+        candidates: [
+          {
+            content: {
+              parts: [
+                {
+                  text: JSON.stringify({
+                    differences: ["diff"],
+                    focusPoints: ["focus"],
+                    tips: ["tip"],
+                  }),
+                },
+              ],
+            },
+          },
+        ],
+      }),
+    })) as any;
+
+    const service = new GeminiService({ fetchImpl, apiKey: "key" });
+    await expect(
+      service.generateListeningTips(mockSound, { ...mockSound, name: "ギター" }),
+    ).resolves.toEqual({
+      differences: ["diff"],
+      focusPoints: ["focus"],
+      tips: ["tip"],
+    });
+  });
+
+  it("returns fallback study plan when JSON invalid", async () => {
+    const fetchImpl = jest.fn(async () => ({
+      ok: true,
+      json: async () => ({
+        candidates: [
+          {
+            content: {
+              parts: [{ text: "not json" }],
+            },
+          },
+        ],
+      }),
+    })) as any;
+
+    const service = new GeminiService({ fetchImpl, apiKey: "key" });
+    await expect(
+      service.suggestStudyPlan({ categoryStats: { "楽器の音": { correct: 5, total: 10 } } }),
+    ).resolves.toHaveProperty("practiceSchedule");
+  });
 });
