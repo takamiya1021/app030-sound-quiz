@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
+import { validateSoundsOnServer } from "@/lib/validateSounds.server";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -11,6 +14,8 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+validateSoundsOnServer();
 
 export const metadata: Metadata = {
   title: "音当てクイズ | Oto Quiz Trainer",
