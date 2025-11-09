@@ -143,4 +143,30 @@ describe("AudioEngine", () => {
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
+
+  it("throws a descriptive error when Web Audio API is unavailable", async () => {
+    const { fetchMock } = createMockFetch();
+    const engine = new AudioEngine({
+      createContext: null,
+      fetchImpl: fetchMock,
+    });
+
+    await expect(engine.playSound("instruments/piano.mp3")).rejects.toThrow(
+      "Web Audio API",
+    );
+  });
+
+  it("throws a descriptive error when fetch fails", async () => {
+    const fetchMock = jest.fn(async () => ({
+      ok: false,
+      status: 404,
+    })) as any;
+    const { context } = createMockContext();
+    const engine = new AudioEngine({
+      createContext: () => context,
+      fetchImpl: fetchMock,
+    });
+
+    await expect(engine.playSound("missing.mp3")).rejects.toThrow("ダウンロード");
+  });
 });

@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { audioEngine } from "@/lib/audioEngine";
 
 type AudioEngineLike = {
   playSound: (filename: string) => Promise<void>;
   stopSound: () => void;
+  isSupported?: () => boolean;
 };
 
 interface AudioPlayerProps {
@@ -26,9 +27,20 @@ export function AudioPlayer({
   const [isPlaying, setIsPlaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const supported = engine.isSupported ? engine.isSupported() : true;
   const remaining = Math.max(maxPlayCount - playCount, 0);
 
+  useEffect(() => {
+    if (!supported) {
+      setError("お使いの環境では音声再生がサポートされていません");
+    }
+  }, [supported]);
+
   const handlePlay = async () => {
+    if (!supported) {
+      setError("お使いの環境では音声再生がサポートされていません");
+      return;
+    }
     if (isPlaying || remaining <= 0) return;
 
     setIsPlaying(true);
@@ -38,7 +50,8 @@ export function AudioPlayer({
       setPlayCount((count) => count + 1);
     } catch (err) {
       console.error(err);
-      setError("音声の再生に失敗しました");
+      const message = err instanceof Error ? err.message : "音声の再生に失敗しました";
+      setError(message);
     } finally {
       setIsPlaying(false);
     }
@@ -66,10 +79,12 @@ export function AudioPlayer({
         <button
           type="button"
           onClick={handlePlay}
-          disabled={remaining <= 0 || isPlaying}
+          disabled={remaining <= 0 || isPlaying || !supported}
           className={[
             "flex h-20 w-20 items-center justify-center rounded-full text-2xl transition",
-            remaining <= 0
+            !supported
+              ? "bg-slate-600 text-slate-400"
+              : remaining <= 0
               ? "bg-slate-600 text-slate-400"
               : "bg-indigo-500 text-white shadow-[0_10px_30px_rgba(99,102,241,0.4)] hover:bg-indigo-400",
           ].join(" ")}

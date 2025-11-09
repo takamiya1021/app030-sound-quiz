@@ -1,8 +1,8 @@
 type FetchLike = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
 interface AudioEngineOptions {
-  createContext?: () => AudioContext;
-  fetchImpl?: FetchLike;
+  createContext?: (() => AudioContext) | null;
+  fetchImpl?: FetchLike | null;
   targetPeak?: number;
 }
 
@@ -13,10 +13,13 @@ const resolveSoundPath = (filename: string): string => {
   return trimmed.startsWith("sounds/") ? `/${trimmed}` : `/sounds/${trimmed}`;
 };
 
+const UNSUPPORTED_ERROR = "お使いの環境ではWeb Audio APIが利用できません";
+const DOWNLOAD_ERROR = "音源のダウンロードに失敗しました";
+
 export class AudioEngine {
   private readonly fetchImpl: FetchLike | null;
 
-  private readonly createContext: () => AudioContext;
+  private readonly contextFactory: (() => AudioContext) | null;
 
   private readonly targetPeak: number;
 
@@ -32,8 +35,24 @@ export class AudioEngine {
 
   public constructor(options: AudioEngineOptions = {}) {
     this.fetchImpl = options.fetchImpl ?? (typeof fetch === "function" ? fetch.bind(globalThis) : null);
-    this.createContext = options.createContext ?? (() => new AudioContext());
+    if (options.createContext !== undefined) {
+      this.contextFactory = options.createContext;
+    } else if (typeof window !== "undefined") {
+      const AudioCtor =
+        (window as typeof window & { webkitAudioContext?: typeof AudioContext }).AudioContext ??
+        (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext ??
+        null;
+      this.contextFactory = AudioCtor ? (() => new AudioCtor()) : null;
+    } else if (typeof AudioContext !== "undefined") {
+      this.contextFactory = () => new AudioContext();
+    } else {
+      this.contextFactory = null;
+    }
     this.targetPeak = options.targetPeak ?? 0.8;
+  }
+
+  public isSupported(): boolean {
+    return Boolean(this.contextFactory);
   }
 
   public async init(): Promise<void> {
@@ -41,7 +60,11 @@ export class AudioEngine {
       return;
     }
 
-    const ctx = this.createContext();
+    if (!this.contextFactory) {
+      throw new Error(UNSUPPORTED_ERROR);
+    }
+
+    const ctx = this.contextFactory();
     const gain = ctx.createGain();
     gain.connect(ctx.destination);
     gain.gain.value = clamp(gain.gain.value, 0, 1);
@@ -62,14 +85,14 @@ export class AudioEngine {
     }
 
     if (!this.fetchImpl) {
-      throw new Error("fetch API is not available in this environment");
+      throw new Error(DOWNLOAD_ERROR);
     }
 
     await this.init();
 
     const response = await this.fetchImpl(path);
     if (!response.ok) {
-      throw new Error(`音源の読み込みに失敗しました: ${path} (${response.status})`);
+      throw new Error(`${DOWNLOAD_ERROR}: ${path} (${response.status})`);
     }
 
     const arrayBuffer = await response.arrayBuffer();
