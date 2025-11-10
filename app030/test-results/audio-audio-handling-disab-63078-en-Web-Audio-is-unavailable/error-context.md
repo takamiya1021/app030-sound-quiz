@@ -1,0 +1,87 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [active]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - navigation [ref=e7]:
+            - button "previous" [disabled] [ref=e8]:
+              - img "previous" [ref=e9]
+            - generic [ref=e11]:
+              - generic [ref=e12]: 1/
+              - text: "1"
+            - button "next" [disabled] [ref=e13]:
+              - img "next" [ref=e14]
+          - img
+        - generic [ref=e16]:
+          - generic [ref=e17]:
+            - img [ref=e18]
+            - generic "Latest available version is detected (16.0.1)." [ref=e20]: Next.js 16.0.1
+            - generic [ref=e21]: Turbopack
+          - img
+      - dialog "Runtime TypeError" [ref=e23]:
+        - generic [ref=e26]:
+          - generic [ref=e27]:
+            - generic [ref=e28]:
+              - generic [ref=e30]: Runtime TypeError
+              - generic [ref=e31]:
+                - button "Copy Error Info" [ref=e32] [cursor=pointer]:
+                  - img [ref=e33]
+                - button "No related documentation found" [disabled] [ref=e35]:
+                  - img [ref=e36]
+                - link "Learn more about enabling Node.js inspector for server code with Chrome DevTools" [ref=e38] [cursor=pointer]:
+                  - /url: https://nextjs.org/docs/app/building-your-application/configuring/debugging#server-side-code
+                  - img [ref=e39]
+            - generic [ref=e48]: Cannot read properties of undefined (reading 'toFixed')
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - paragraph [ref=e52]:
+                - img [ref=e54]
+                - generic [ref=e57]: app/components/QuizScreen.tsx (127:33) @ QuizScreen
+                - button "Open in editor" [ref=e58] [cursor=pointer]:
+                  - img [ref=e60]
+              - generic [ref=e63]:
+                - generic [ref=e64]: 125 | <div className="flex flex-wrap items-center gap-4 text-sm text-slate-300">
+                - generic [ref=e65]: 126 | <span className="rounded-full border border-white/10 px-3 py-1">
+                - generic [ref=e66]: "> 127 | 正答率 {score.percentage.toFixed(1)}%"
+                - generic [ref=e67]: "| ^"
+                - generic [ref=e68]: 128 | </span>
+                - generic [ref=e69]: 129 | <span className="rounded-full border border-white/10 px-3 py-1">
+                - generic [ref=e70]: "130 | 正解 {score.correct} / {score.total}"
+            - generic [ref=e71]:
+              - generic [ref=e72]:
+                - paragraph [ref=e73]:
+                  - text: Call Stack
+                  - generic [ref=e74]: "16"
+                - button "Show 14 ignore-listed frame(s)" [ref=e75] [cursor=pointer]:
+                  - text: Show 14 ignore-listed frame(s)
+                  - img [ref=e76]
+              - generic [ref=e78]:
+                - generic [ref=e79]:
+                  - text: QuizScreen
+                  - button "Open QuizScreen in editor" [ref=e80] [cursor=pointer]:
+                    - img [ref=e81]
+                - text: app/components/QuizScreen.tsx (127:33)
+              - generic [ref=e83]:
+                - generic [ref=e84]:
+                  - text: QuizPage
+                  - button "Open QuizPage in editor" [ref=e85] [cursor=pointer]:
+                    - img [ref=e86]
+                - text: app/quiz/page.tsx (13:5)
+        - generic [ref=e88]: "1"
+        - generic [ref=e89]: "2"
+    - generic [ref=e94] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e95]:
+        - img [ref=e96]
+      - generic [ref=e99]:
+        - button "Open issues overlay" [ref=e100]:
+          - generic [ref=e101]:
+            - generic [ref=e102]: "0"
+            - generic [ref=e103]: "1"
+          - generic [ref=e104]: Issue
+        - button "Collapse issues badge" [ref=e105]:
+          - img [ref=e106]
+  - 'heading "Application error: a client-side exception has occurred while loading 127.0.0.1 (see the browser console for more information)." [level=2] [ref=e110]'
+```

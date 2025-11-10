@@ -21,13 +21,14 @@ export function QuizChoices({
         const isSelected = selectedIndex === index;
 
         return (
-          <button
-            key={choice}
-            type="button"
-            disabled={disabled}
-            onClick={() => onSelect(index)}
-            className={[
-              "flex w-full items-center gap-4 rounded-2xl border px-5 py-4 text-left transition",
+        <button
+          key={choice}
+          type="button"
+          disabled={disabled}
+          onClick={() => onSelect(index)}
+          data-testid="choice-button"
+          className={[
+            "flex w-full items-center gap-4 rounded-2xl border px-5 py-4 text-left transition",
               isSelected
                 ? "border-indigo-400 bg-indigo-500/20 text-white shadow-[0_10px_25px_rgba(99,102,241,0.35)]"
                 : "border-white/10 bg-white/5 text-slate-100 hover:border-indigo-300/60",

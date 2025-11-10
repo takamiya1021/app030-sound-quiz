@@ -1,17 +1,18 @@
 import { QuizScreen } from "@/app/components/QuizScreen";
 
 interface QuizPageProps {
-  searchParams?: {
+  searchParams?: Promise<{
     category?: string;
     difficulty?: string;
-  };
+  }>;
 }
 
-export default function QuizPage({ searchParams }: QuizPageProps) {
+export default async function QuizPage({ searchParams }: QuizPageProps) {
+  const params = (await searchParams) ?? {};
   return (
     <QuizScreen
-      category={searchParams?.category ?? null}
-      difficulty={searchParams?.difficulty ?? null}
+      category={params.category ?? null}
+      difficulty={params.difficulty ?? null}
     />
   );
 }

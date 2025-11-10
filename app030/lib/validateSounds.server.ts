@@ -41,7 +41,7 @@ export function collectSoundValidationErrors(fsModule?: FsLike): string[] {
     }
 
     const normalizedFilename = sound.filename.replace(/^\/+/, "");
-    const filePath = path.join(process.cwd(), "public", normalizedFilename);
+    const filePath = path.join(process.cwd(), "public", "sounds", normalizedFilename);
     if (!fs.existsSync(filePath)) {
       errors.push(`Missing audio file: ${sound.filename}`);
     }
