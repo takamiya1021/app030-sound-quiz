@@ -4,6 +4,7 @@ test.describe("sound library", () => {
   test("filters sounds by search term", async ({ page }) => {
     await page.goto("/library");
     await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: /動物の鳴き声/ }).click();
     const search = page.getByPlaceholder("音の名前や説明文で検索");
     await expect(search).toBeVisible({ timeout: 15000 });
     await search.fill("猫");

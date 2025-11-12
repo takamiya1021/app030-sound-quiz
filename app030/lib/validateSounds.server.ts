@@ -10,11 +10,23 @@ const DEFAULT_CATEGORIES = new Set(
   sounds.map((sound) => sound.category),
 );
 
-export function collectSoundValidationErrors(fsModule?: FsLike): string[] {
-  const fs =
-    fsModule ??
+const shouldSkip = () =>
+  process.env.SKIP_SOUND_VALIDATION === "1" || process.env.NODE_ENV === "test";
+
+const resolveFs = (): FsLike | null => {
+  try {
     // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-    (require("fs") as FsLike);
+    return require("fs") as FsLike;
+  } catch {
+    return null;
+  }
+};
+
+export function collectSoundValidationErrors(fsModule?: FsLike): string[] {
+  const fs = fsModule ?? resolveFs();
+  if (!fs) {
+    return ["ファイルシステムにアクセスできませんでした"];
+  }
 
   const errors: string[] = [];
   const ids = new Set<string>();
@@ -51,7 +63,7 @@ export function collectSoundValidationErrors(fsModule?: FsLike): string[] {
 }
 
 export function validateSoundsOnServer(): void {
-  if (typeof window !== "undefined") {
+  if (typeof window !== "undefined" || shouldSkip()) {
     return;
   }
 

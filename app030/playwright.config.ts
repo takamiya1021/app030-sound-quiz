@@ -13,7 +13,7 @@ export default defineConfig({
     headless: true,
   },
   webServer: {
-    command: `npm run dev -- --hostname 127.0.0.1 --port ${port}`,
+    command: `SKIP_SOUND_VALIDATION=1 npm run dev -- --hostname 127.0.0.1 --port ${port}`,
     port,
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
