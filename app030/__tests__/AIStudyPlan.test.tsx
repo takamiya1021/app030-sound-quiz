@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 
 import { AIStudyPlan } from "@/app/components/AIStudyPlan";
 import { geminiService } from "@/lib/geminiService";
-import { useQuizStore } from "@/store/useQuizStore";
+import { resetQuizStore, useQuizStore } from "@/store/useQuizStore";
 
 jest.mock("@/lib/geminiService", () => ({
   geminiService: {
@@ -11,24 +11,28 @@ jest.mock("@/lib/geminiService", () => ({
   },
 }));
 
-jest.mock("@/store/useQuizStore");
-
 describe("AIStudyPlan", () => {
+  beforeEach(() => {
+    resetQuizStore();
+  });
+
   it("disables button when no history", () => {
-    (useQuizStore as jest.Mock).mockImplementation((selector) =>
-      selector({ progress: { categoryStats: {} } }),
-    );
     render(<AIStudyPlan />);
     expect(screen.getByRole("button", { name: "プランを生成" })).toBeDisabled();
   });
 
   it("generates plan when history exists", async () => {
     const user = userEvent.setup();
-    (useQuizStore as jest.Mock).mockImplementation((selector) =>
-      selector({
-        progress: { categoryStats: { "楽器の音": { correct: 5, total: 10 } } },
-      }),
-    );
+    useQuizStore.setState((state) => ({
+      ...state,
+      progress: {
+        ...state.progress,
+        categoryStats: {
+          ...state.progress.categoryStats,
+          "楽器の音": { correct: 5, total: 10 },
+        },
+      },
+    }));
     (geminiService.suggestStudyPlan as jest.Mock).mockResolvedValue({
       weakCategories: ["楽器の音"],
       recommendedOrder: ["楽器の音"],

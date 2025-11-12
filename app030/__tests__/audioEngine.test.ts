@@ -52,12 +52,21 @@ const createMockContext = () => {
   return { context: context as unknown as AudioContext, gainNode, sources };
 };
 
-const createMockFetch = () => {
+type MockFetchResponse = {
+  ok: boolean;
+  status: number;
+  arrayBuffer: () => Promise<ArrayBuffer>;
+};
+
+type MockFetch = jest.Mock<Promise<MockFetchResponse>, [RequestInfo | URL, RequestInit?]>;
+
+const createMockFetch = (overrides?: Partial<MockFetchResponse>) => {
   const buffer = new ArrayBuffer(8);
-  const fetchMock = jest.fn(async () => ({
+  const fetchMock: MockFetch = jest.fn(async () => ({
     ok: true,
     status: 200,
     arrayBuffer: async () => buffer,
+    ...overrides,
   }));
 
   return { fetchMock, buffer };
@@ -157,10 +166,11 @@ describe("AudioEngine", () => {
   });
 
   it("throws a descriptive error when fetch fails", async () => {
-    const fetchMock = jest.fn(async () => ({
+    const fetchMock: MockFetch = jest.fn(async () => ({
       ok: false,
       status: 404,
-    })) as any;
+      arrayBuffer: async () => new ArrayBuffer(0),
+    }));
     const { context } = createMockContext();
     const engine = new AudioEngine({
       createContext: () => context,

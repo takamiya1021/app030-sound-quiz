@@ -1,4 +1,3 @@
-import sounds from "@/data/sounds";
 import {
   calculateScore,
   checkAnswer,

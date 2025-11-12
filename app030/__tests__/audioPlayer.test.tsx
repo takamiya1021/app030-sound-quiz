@@ -36,6 +36,8 @@ describe("AudioPlayer", () => {
       isSupported: () => true,
     };
 
+    const errorSpy = jest.spyOn(console, "error").mockImplementation(() => undefined);
+
     render(
       <AudioPlayer
         soundName="ピアノ"
@@ -47,6 +49,7 @@ describe("AudioPlayer", () => {
     const button = screen.getByRole("button", { name: /ピアノ を再生/ });
     await user.click(button);
     expect(await screen.findByText("fail")).toBeInTheDocument();
+    errorSpy.mockRestore();
   });
 
   it("disables playback when Web Audio is unsupported", () => {

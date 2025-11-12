@@ -107,14 +107,14 @@ export const createQuizStore = () =>
         const choiceLabels: string[][] = [];
         const choiceIds: string[][] = [];
 
-        quizSounds.forEach((sound, index) => {
+        quizSounds.forEach((sound) => {
           const choiceObjects = generateChoices(sound, state.sounds);
           choiceLabels.push(choiceObjects.map((choice) => choice.name));
           choiceIds.push(choiceObjects.map((choice) => choice.id));
         });
 
-        const correctAnswers = choiceIds.map((idSet, index) => {
-          const correctId = quizSounds[index]?.id;
+        const correctAnswers = choiceIds.map((idSet, idx) => {
+          const correctId = quizSounds[idx]?.id;
           const answerIndex = idSet.findIndex((id) => id === correctId);
           if (answerIndex === -1) {
             throw new Error("選択肢に正解が含まれていません");

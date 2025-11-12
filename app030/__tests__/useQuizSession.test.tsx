@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { useQuizSession } from "@/app/hooks/useQuizSession";
@@ -32,15 +32,17 @@ describe("useQuizSession", () => {
     resetQuizStore();
   });
 
-  it("initialises a quiz session automatically", () => {
+  it("initialises a quiz session automatically", async () => {
     render(<Harness category="楽器の音" difficulty="beginner" />);
+    await act(async () => {});
 
     expect(screen.getByTestId("status").textContent).toBe("in-progress");
     expect(screen.getByTestId("question").textContent).toBe("1");
   });
 
-  it("falls back to beginner difficulty for invalid value", () => {
+  it("falls back to beginner difficulty for invalid value", async () => {
     render(<Harness category="楽器の音" difficulty="expert" />);
+    await act(async () => {});
 
     expect(screen.getByTestId("difficulty").textContent).toBe("beginner");
   });
@@ -48,6 +50,7 @@ describe("useQuizSession", () => {
   it("marks quiz as completed after answering all questions", async () => {
     const user = userEvent.setup();
     render(<Harness category="楽器の音" difficulty="beginner" />);
+    await act(async () => {});
 
     const button = await screen.findByRole("button", { name: "answer" });
     for (let i = 0; i < 10; i += 1) {

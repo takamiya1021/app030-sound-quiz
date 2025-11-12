@@ -1,5 +1,13 @@
 import { GeminiService } from "@/lib/geminiService";
 
+type MockFetchResponse = {
+  ok: boolean;
+  status: number;
+  json: () => Promise<unknown>;
+};
+
+type MockFetch = jest.Mock<Promise<MockFetchResponse>, [RequestInfo | URL, RequestInit?]>;
+
 const mockSound = {
   name: "ピアノ",
   category: "楽器の音",
@@ -13,7 +21,7 @@ describe("GeminiService", () => {
   });
 
   it("returns formatted response when API succeeds", async () => {
-    const fetchImpl = jest.fn(async () => ({
+    const fetchImpl: MockFetch = jest.fn(async () => ({
       ok: true,
       json: async () => ({
         candidates: [
@@ -24,25 +32,25 @@ describe("GeminiService", () => {
           },
         ],
       }),
-    })) as any;
+    }));
 
     const service = new GeminiService({ fetchImpl, apiKey: "test-key" });
     await expect(service.generateSoundDescription(mockSound)).resolves.toBe("テスト応答");
   });
 
   it("falls back when API returns error", async () => {
-    const fetchImpl = jest.fn(async () => ({
+    const fetchImpl: MockFetch = jest.fn(async () => ({
       ok: false,
       status: 500,
       json: async () => ({}),
-    })) as any;
+    }));
 
     const service = new GeminiService({ fetchImpl, apiKey: "test-key" });
     await expect(service.generateSoundDescription(mockSound)).resolves.toMatch(/ピアノ/);
   });
 
   it("parses listening tips JSON", async () => {
-    const fetchImpl = jest.fn(async () => ({
+    const fetchImpl: MockFetch = jest.fn(async () => ({
       ok: true,
       json: async () => ({
         candidates: [
@@ -61,7 +69,7 @@ describe("GeminiService", () => {
           },
         ],
       }),
-    })) as any;
+    }));
 
     const service = new GeminiService({ fetchImpl, apiKey: "key" });
     await expect(
@@ -74,7 +82,7 @@ describe("GeminiService", () => {
   });
 
   it("returns fallback study plan when JSON invalid", async () => {
-    const fetchImpl = jest.fn(async () => ({
+    const fetchImpl: MockFetch = jest.fn(async () => ({
       ok: true,
       json: async () => ({
         candidates: [
@@ -85,7 +93,7 @@ describe("GeminiService", () => {
           },
         ],
       }),
-    })) as any;
+    }));
 
     const service = new GeminiService({ fetchImpl, apiKey: "key" });
     await expect(

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { resetQuizStore, useQuizStore } from "@/store/useQuizStore";
 import { QUIZ_LENGTH, DifficultyLevel, isDifficultyLevel } from "@/types";
@@ -18,6 +18,11 @@ export function useQuizSession(category?: string | null, difficultyInput?: strin
   );
 
   const [error, setError] = useState<string | null>(null);
+  const scheduleErrorUpdate = useCallback((value: string | null) => {
+    startTransition(() => {
+      setError(value);
+    });
+  }, []);
 
   const currentSession = useQuizStore((state) => state.currentSession);
   const currentSound = useQuizStore((state) => state.currentSound);
@@ -43,14 +48,20 @@ export function useQuizSession(category?: string | null, difficultyInput?: strin
       return;
     }
 
-    try {
-      startQuiz(normalizedCategory, normalizedDifficulty);
-      setError(null);
-    } catch (err) {
-      console.error(err);
-      setError("クイズの開始に失敗しました");
-    }
-  }, [normalizedCategory, normalizedDifficulty, currentSession, startQuiz]);
+    const run = async () => {
+      try {
+        startQuiz(normalizedCategory, normalizedDifficulty);
+        await Promise.resolve();
+        scheduleErrorUpdate(null);
+      } catch (err) {
+        console.error(err);
+        await Promise.resolve();
+        scheduleErrorUpdate("クイズの開始に失敗しました");
+      }
+    };
+
+    run();
+  }, [normalizedCategory, normalizedDifficulty, currentSession, startQuiz, scheduleErrorUpdate]);
 
   const status: QuizStatus = useMemo(() => {
     if (error) return "error";
@@ -118,8 +129,8 @@ export function useQuizSession(category?: string | null, difficultyInput?: strin
 
   const resetQuiz = useCallback(() => {
     resetQuizStore();
-    setError(null);
-  }, []);
+    scheduleErrorUpdate(null);
+  }, [scheduleErrorUpdate]);
 
   return {
     status,

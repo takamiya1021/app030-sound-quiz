@@ -1,4 +1,5 @@
 import "@testing-library/jest-dom";
+import React from "react";
 
 class AudioContextMock {
   public currentTime = 0;
@@ -36,11 +37,10 @@ Object.defineProperty(globalThis, "AudioContext", {
 });
 
 jest.mock("next/link", () => {
-  const React = require("react");
-  return React.forwardRef(
-    (
-      { href, children, ...rest }: { href: string; children: React.ReactNode },
-      ref: React.ForwardedRef<HTMLAnchorElement>,
-    ) => React.createElement("a", { href, ref, ...rest }, children),
+  const MockLink = React.forwardRef<HTMLAnchorElement, React.ComponentPropsWithoutRef<"a">>(
+    ({ href = "#", children, ...rest }, ref) =>
+      React.createElement("a", { href, ref, ...rest }, children),
   );
+  MockLink.displayName = "MockNextLink";
+  return MockLink;
 });

@@ -133,7 +133,7 @@ export class AudioEngine {
     if (source) {
       try {
         source.stop(0);
-      } catch (error) {
+      } catch {
         // no-op: stopping an already stopped source can throw in some browsers
       }
       if (typeof source.disconnect === "function") {

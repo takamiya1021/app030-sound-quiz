@@ -1,3 +1,4 @@
+import fs from "fs";
 import path from "path";
 
 import sounds from "@/data/sounds";
@@ -13,20 +14,8 @@ const DEFAULT_CATEGORIES = new Set(
 const shouldSkip = () =>
   process.env.SKIP_SOUND_VALIDATION === "1" || process.env.NODE_ENV === "test";
 
-const resolveFs = (): FsLike | null => {
-  try {
-    // eslint-disable-next-line global-require, @typescript-eslint/no-var-requires
-    return require("fs") as FsLike;
-  } catch {
-    return null;
-  }
-};
-
-export function collectSoundValidationErrors(fsModule?: FsLike): string[] {
-  const fs = fsModule ?? resolveFs();
-  if (!fs) {
-    return ["ファイルシステムにアクセスできませんでした"];
-  }
+export function collectSoundValidationErrors(fsModule: FsLike = fs): string[] {
+  const checker = fsModule;
 
   const errors: string[] = [];
   const ids = new Set<string>();
@@ -54,7 +43,7 @@ export function collectSoundValidationErrors(fsModule?: FsLike): string[] {
 
     const normalizedFilename = sound.filename.replace(/^\/+/, "");
     const filePath = path.join(process.cwd(), "public", "sounds", normalizedFilename);
-    if (!fs.existsSync(filePath)) {
+    if (!checker.existsSync(filePath)) {
       errors.push(`Missing audio file: ${sound.filename}`);
     }
   });

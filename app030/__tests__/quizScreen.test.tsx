@@ -34,25 +34,24 @@ describe("QuizScreen", () => {
   });
 
   it("renders question and choices when in-progress", () => {
+    const sampleSound = {
+      id: "sound-1",
+      category: "楽器の音",
+      name: "ピアノ",
+      filename: "instruments/piano.mp3",
+      description: "",
+      difficulty: "beginner" as const,
+    };
+
     const quizSession: QuizSession = {
       id: "session-1",
       category: "楽器の音",
       difficulty: "beginner",
       currentIndex: 0,
       answers: Array(10).fill(null),
-      sounds: [
-        {
-          id: "sound-1",
-          category: "楽器の音",
-          name: "ピアノ",
-          filename: "instruments/piano.mp3",
-          description: "",
-          difficulty: "beginner",
-        },
-      ] as any,
-      choices: [
-        ["ピアノ", "ギター", "フルート", "サックス"],
-      ] as any,
+      sounds: Array(10).fill(sampleSound),
+      choices: Array(10).fill(["ピアノ", "ギター", "フルート", "サックス"]),
+      choiceSoundIds: Array(10).fill(["sound-1", "sound-2", "sound-3", "sound-4"]),
       correctAnswers: Array(10).fill(0),
       playCount: Array(10).fill(0),
       startedAt: new Date(),
