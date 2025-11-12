@@ -38,7 +38,9 @@ Object.defineProperty(globalThis, "AudioContext", {
 jest.mock("next/link", () => {
   const React = require("react");
   return React.forwardRef(
-    ({ href, children, ...rest }: { href: string; children: React.ReactNode }, ref) =>
-      React.createElement("a", { href, ref, ...rest }, children),
+    (
+      { href, children, ...rest }: { href: string; children: React.ReactNode },
+      ref: React.ForwardedRef<HTMLAnchorElement>,
+    ) => React.createElement("a", { href, ref, ...rest }, children),
   );
 });
