@@ -1,36 +1,158 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎵 音当てクイズ (Sound Quiz)
 
-## Getting Started
+ランダムに再生される音を聞いて、何の音かを当てるクイズアプリです。日常の音、楽器の音、動物の鳴き声等、様々なカテゴリーの音をゲーム感覚で学習できます。
 
-First, run the development server:
+## ✨ 主要機能
+
+### 必須機能（MVP）
+- **音声再生**: Web Audio APIによる高品質な音声再生
+- **クイズ出題**: 4択問題形式（1セット10問）
+- **カテゴリー別出題**: 楽器/動物/日常音/自然音/効果音
+- **回答・採点**: 即座に正誤判定、スコア表示
+- **音源バンク**: 50音以上のプリセット音源
+
+### 拡張機能
+- **難易度設定**: 初級/中級/上級
+- **学習モード**: 音源ライブラリの自由閲覧
+- **進捗管理**: カテゴリー別正答率、学習履歴
+- **間違えやすい音の記録**: よく間違える音の組み合わせを表示
+
+### AI機能（Gemini API）
+- **音声説明文の自動生成**: 各音の特徴を詳しく解説
+- **聞き分けアドバイス**: 似た音の違いを言語化
+- **学習プラン提案**: ユーザーの苦手分野を分析して最適な学習順序を提案
+
+## 🚀 セットアップ
+
+### 必要要件
+- Node.js 18.x以上
+- モダンブラウザ（Web Audio API対応）
+
+### インストール
 
 ```bash
+# 依存関係のインストール
+npm install
+
+# 開発サーバーの起動
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ブラウザで [http://localhost:3000](http://localhost:3000) を開いてください。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 環境変数（オプション）
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+AI機能を使用する場合は、Gemini API キーが必要です。
 
-## Learn More
+```bash
+# .env.local ファイルを作成
+NEXT_PUBLIC_GEMINI_API_KEY=your-api-key-here
+```
 
-To learn more about Next.js, take a look at the following resources:
+または、アプリ内の設定画面でAPIキーを登録できます（LocalStorageに保存）。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**注意**: APIキーはクライアントサイドで使用されます。公開リポジトリにAPIキーをコミットしないでください。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🎮 使い方
 
-## Deploy on Vercel
+1. **ホーム画面**: カテゴリーを選択してクイズ開始
+2. **クイズ画面**: 音声を聞いて4択から回答を選択
+3. **結果画面**: スコアと正答率を確認
+4. **学習モード**: 音源ライブラリで自由に音を聞いて学習
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎼 音源カテゴリー
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 1. 楽器の音（15音）
+ピアノ、ギター、バイオリン、チェロ、トランペット、フルート、ドラム、ベース、サックス、ハープ、オルガン、クラリネット、アコーディオン、シンセサイザー、シロフォン
+
+### 2. 動物の鳴き声（12音）
+犬、猫、牛、馬、オンドリ、スズメ、フクロウ、ライオン、象、カエル、イルカ、オオカミ
+
+### 3. 日常の音（10音）
+ドアベル、車のクラクション、電話の着信音、掃除機、洗濯機、時計の秒針、キーボードタイピング、水道の蛇口、ドアの開閉音、電子レンジ
+
+### 4. 自然の音（8音）
+雨、雷、風、波、川のせせらぎ、森の鳥のさえずり、焚き火、滝
+
+### 5. 効果音（5音）
+拍手、足音、ガラスが割れる音、ドアをノックする音、笑い声
+
+## 🧪 テスト
+
+```bash
+# 単体テスト（Jest）
+npm test
+
+# E2Eテスト（Playwright）
+npm run test:e2e
+
+# テストカバレッジ
+npm run test:coverage
+```
+
+## 🛠️ 技術スタック
+
+- **フレームワーク**: Next.js 14 (App Router)
+- **言語**: TypeScript
+- **スタイリング**: Tailwind CSS
+- **状態管理**: Zustand
+- **音声処理**: Web Audio API
+- **AI**: Google Gemini API (gemini-2.0-flash-exp)
+- **テスト**: Jest + React Testing Library + Playwright
+- **デプロイ**: 静的エクスポート対応
+
+## 📝 開発コマンド
+
+```bash
+# 開発サーバー起動
+npm run dev
+
+# 本番ビルド（静的エクスポート）
+SKIP_SOUND_VALIDATION=1 npm run build
+
+# Lint実行
+npm run lint
+
+# テスト実行
+npm test
+npm run test:e2e
+```
+
+## 🎵 音源クレジット
+
+本アプリで使用している音源は、以下の著作権フリー音源サイトから収集したものです：
+
+- **Freesound.org**: 効果音・環境音
+- **SoundBible.com**: 日常音・動物の鳴き声
+- **DOVA-SYNDROME**: 日本の著作権フリー音源
+- **効果音ラボ**: 日本語の効果音
+
+**注意**: 現在、プレースホルダー音源ファイル（空ファイル）が配置されています。実際の音源は、著作権フリー音源を収集して `public/sounds/` ディレクトリに配置してください。
+
+## 📦 ビルド・デプロイ
+
+```bash
+# 静的エクスポート（音源検証スキップ）
+SKIP_SOUND_VALIDATION=1 npm run build
+
+# ビルド結果の確認
+ls -lh out/
+```
+
+静的エクスポートされたファイルは `out/` ディレクトリに生成されます。Vercel、Netlify、GitHub Pages等にデプロイできます。
+
+## 🤝 貢献
+
+プルリクエスト、バグ報告、機能提案を歓迎します！
+
+## 📄 ライセンス
+
+MIT License
+
+## 👤 作者
+
+Hiroaki Takamiya (@takamiya1021)
+
+---
+
+**Have fun learning sounds! 🎶**
