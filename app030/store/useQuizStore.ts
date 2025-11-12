@@ -86,7 +86,7 @@ export interface QuizStore {
   // Computed
   currentSound: () => SoundData | null;
   currentChoices: () => string[] | null;
-  score: () => { correct: number; total: number };
+  score: () => { correct: number; total: number; percentage: number };
   categoryAccuracy: (category: string) => number;
 }
 
@@ -299,10 +299,10 @@ export const createQuizStore = () =>
     score: () => {
       const session = get().currentSession;
       if (!session) {
-        return { correct: 0, total: 0 };
+        return { correct: 0, total: 0, percentage: 0 };
       }
 
-      return session.answers.reduce(
+      const result = session.answers.reduce(
         (acc, answer, index) => {
           if (answer === null) {
             return acc;
@@ -315,6 +315,11 @@ export const createQuizStore = () =>
         },
         { correct: 0, total: 0 },
       );
+
+      const percentage =
+        result.total > 0 ? (result.correct / result.total) * 100 : 0;
+
+      return { correct: result.correct, total: result.total, percentage };
     },
 
     categoryAccuracy: (category) => {

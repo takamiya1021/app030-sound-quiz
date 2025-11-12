@@ -88,6 +88,7 @@ describe("useQuizStore", () => {
     const score = store.getState().score();
     expect(score.correct).toBe(1);
     expect(score.total).toBe(2);
+    expect(score.percentage).toBeCloseTo(50);
   });
 
   it("updates progress metrics after recording results", () => {
