@@ -92,6 +92,18 @@ export function Home({ previewEngine }: HomeProps) {
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-12 sm:px-6 lg:px-8">
+      {/* Settings Link */}
+      <div className="flex justify-end">
+        <Link
+          href="/settings"
+          className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-slate-900/40 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-indigo-300 hover:bg-slate-900/60 hover:text-white"
+          title="設定"
+        >
+          <span className="text-lg">⚙️</span>
+          <span>設定</span>
+        </Link>
+      </div>
+
       <section className="grid gap-6 lg:grid-cols-[3fr,2fr]">
         <div className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-[0_20px_60px_rgba(15,23,42,0.4)] backdrop-blur">
           <p className="text-sm font-semibold uppercase tracking-[0.4em] text-indigo-200/80">

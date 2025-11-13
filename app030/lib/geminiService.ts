@@ -49,7 +49,12 @@ export class GeminiService {
 
   constructor(options: GeminiServiceOptions = {}) {
     this.fetchImpl = options.fetchImpl ?? (typeof fetch === "function" ? fetch.bind(globalThis) : null);
-    this.apiKey = options.apiKey ?? process.env.GEMINI_API_KEY ?? process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    this.apiKey = options.apiKey
+      ?? (typeof window !== 'undefined'
+          ? localStorage.getItem('gemini_api_key') ?? undefined
+          : undefined)
+      ?? process.env.GEMINI_API_KEY
+      ?? process.env.NEXT_PUBLIC_GEMINI_API_KEY;
   }
 
   private async callModel(prompt: string): Promise<string | null> {
