@@ -9,6 +9,7 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+**/node_modules/
 
 # testing
 /coverage
@@ -16,6 +17,7 @@
 # next.js
 /.next/
 /out/
+**/.next/
 
 # production
 /build
@@ -39,3 +41,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Large audio files (>50MB) - add smaller versions manually
+app030/public/sounds/nature/thunder.mp3
+app030/public/sounds/nature/wind.mp3
